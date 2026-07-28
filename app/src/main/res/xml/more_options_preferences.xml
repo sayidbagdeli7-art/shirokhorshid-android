@@ -94,6 +94,10 @@
             android:inputType="textMultiLine|textNoSuggestions"
             android:summary="@string/cdnFrontingCustomSniPreferenceSummary"
             android:title="@string/cdnFrontingCustomSniPreferenceTitle" />
+        <Preference
+            android:key="useLastFoundCdnBridge"
+            android:title="استفاده از آخرین پل پیدا‌شده"
+            android:summary="آخرین IP و SNI که اسکنر پیدا کرده را در فیلدهای بالا قرار می‌دهد" />
     </PreferenceCategory>
     <PreferenceCategory
         android:key="conduitCategory"

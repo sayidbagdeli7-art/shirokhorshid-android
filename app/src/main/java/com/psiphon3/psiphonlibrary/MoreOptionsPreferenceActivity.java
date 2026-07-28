@@ -45,6 +45,8 @@ import androidx.preference.SwitchPreference;
 import com.psiphon3.MainActivityViewModel;
 import com.psiphon3.R;
 
+import net.grandcentrix.tray.AppPreferences;
+
 import java.util.Locale;
 
 public class MoreOptionsPreferenceActivity extends LocalizedActivities.AppCompatActivity {
@@ -180,6 +182,29 @@ public class MoreOptionsPreferenceActivity extends LocalizedActivities.AppCompat
                 mCdnFrontingCustomSni.setOnPreferenceChangeListener((preference, newValue) -> {
                     updateCdnFrontingCustomSniSummary(
                             (EditTextPreference) preference, (String) newValue);
+                    return true;
+                });
+            }
+
+            Preference useLastFoundBridge = preferences.findPreference("useLastFoundCdnBridge");
+            if (useLastFoundBridge != null) {
+                useLastFoundBridge.setOnPreferenceClickListener(preference -> {
+                    AppPreferences appPrefs = new AppPreferences(getContext());
+                    String lastIp = appPrefs.getString("cdnFrontingLastFoundIp", "");
+                    String lastSni = appPrefs.getString("cdnFrontingLastFoundSni", "");
+                    if (TextUtils.isEmpty(lastIp)) {
+                        Toast.makeText(getContext(), "هنوز هیچ پلی پیدا نشده", Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
+                    if (mCdnFrontingCustomIpList != null) {
+                        mCdnFrontingCustomIpList.setText(lastIp);
+                        updateCdnFrontingCustomIpSummary(mCdnFrontingCustomIpList, lastIp);
+                    }
+                    if (mCdnFrontingCustomSni != null) {
+                        mCdnFrontingCustomSni.setText(lastSni);
+                        updateCdnFrontingCustomSniSummary(mCdnFrontingCustomSni, lastSni);
+                    }
+                    Toast.makeText(getContext(), "پل قبلی اعمال شد", Toast.LENGTH_SHORT).show();
                     return true;
                 });
             }

@@ -2194,7 +2194,16 @@ public class TunnelManager implements PsiphonTunnel.HostService, VpnManager.VpnS
                     java.util.regex.Matcher matcher = pattern.matcher(message);
                     if (matcher.find()) {
                         String ipAddress = unescapeRedactionSafeIPAddress(matcher.group(1));
-                        String sniServerName = matcher.group(2);
+                        String rawSni = matcher.group(2);
+                        String sniToStore = "none".equals(rawSni) ? "" : rawSni;
+
+                        // Persist the last successfully found bridge so the user can
+                        // reuse it later without re-scanning.
+                        AppPreferences lastBridgePrefs = new AppPreferences(getContext());
+                        lastBridgePrefs.put("cdnFrontingLastFoundIp", ipAddress);
+                        lastBridgePrefs.put("cdnFrontingLastFoundSni", sniToStore);
+
+                        String sniServerName = rawSni;
                         if ("none".equals(sniServerName)) {
                             sniServerName = getContext().getString(R.string.cdn_fronting_scan_no_sni);
                         }
